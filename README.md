@@ -7,6 +7,12 @@ Makers Academy week 4 pairing challenge. The goal of this project is **I can bui
 `https://github.com/almorcrette/bookmark-manager.git`
 `command_to_install_dependencies` (e.g. `bundle`)
 
+Setting up the database:
+1. Connect to `psql`
+2. Create the database using the `psql` command `CREATE DATABASE bookmark_manager;`
+3. Connect to the database using the `qsql` command `\c bookmark_manager;`
+4. Run the query saved in the file `./db/migrations/01_create_bookmarks_table.sql`
+
 ## Usage
 
 `command_to_start` (e.g. `rackup` or `rails s`)
