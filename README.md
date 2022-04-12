@@ -41,7 +41,7 @@ The website will have the following specification:
 
 #### List of bookmarks
 
-![](./bookmark_manager-01.png)
+![](./bookmark_manager-02.png)
 
 
 ----------------------------------------------
