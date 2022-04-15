@@ -2,8 +2,13 @@ require 'sinatra/base'
 require 'sinatra/reloader'
 require_relative './lib/bookmark'
 require './database_connection_setup'
+require 'uri'
+require 'sinatra/flash'
 
 class BookmarkManager < Sinatra::Base
+
+  enable :sessions, :method_override
+
   configure :development do
     register Sinatra::Reloader
   end
@@ -18,12 +23,6 @@ class BookmarkManager < Sinatra::Base
     erb :'bookmarks/index'
   end
 
-  # Bookmarks create
-  post '/bookmarks' do
-    Bookmark.create(url: params[:url], title: params[:title])
-    redirect to('/bookmarks')
-  end
-
   # Bookmarks new
   get '/bookmarks/new' do
     erb :'bookmarks/new'
@@ -35,6 +34,19 @@ class BookmarkManager < Sinatra::Base
   end
 
   enable :sessions, :method_override
+
+  # Bookmarks create
+  post '/bookmarks' do
+    if params['url'] =~ /\A#{URI::DEFAULT_PARSER.make_regexp(['http', 'https'])}\z/
+      p "I've passed the validation rule"
+      Bookmark.create(url: params[:url], title: params[:title])
+    else
+      p "I've been caught by the validation rule"
+      flash[:notice] = "You must submit a valid URL."
+      p flash[:notice]
+    end
+    redirect to('/bookmarks')
+  end
 
   delete '/bookmarks/:id' do
     Bookmark.delete(id: params[:id])
