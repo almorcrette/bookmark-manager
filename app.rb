@@ -8,6 +8,7 @@ require 'sinatra/flash'
 class BookmarkManager < Sinatra::Base
 
   enable :sessions, :method_override
+  register Sinatra::Flash
 
   configure :development do
     register Sinatra::Reloader
@@ -32,8 +33,6 @@ class BookmarkManager < Sinatra::Base
     @bookmark = Bookmark.find(id: params[:id])
     erb :'bookmarks/edit'
   end
-
-  enable :sessions, :method_override
 
   # Bookmarks create
   post '/bookmarks' do
