@@ -2,6 +2,10 @@
   <h1>Welcome, <%= @user.email %></h1>
 <% end %>
 
+<form action="/sessions/destroy" method="post">
+  <input type="submit" value="Sign out" />
+</form>
+
 <% flash.keys.each do |type| %>
   <div data-alert class="flash <%= type %> alert-box radius">
     <%= flash[type] %>

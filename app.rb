@@ -85,7 +85,7 @@ class BookmarkManager < Sinatra::Base
   end
 
   post '/users' do
-    user = User.create(email: params[:email], password: paramas[:password])
+    user = User.create(email: params[:email], password: params[:password])
     session[:user_id] = user.id
     redirect '/bookmarks'
   end
@@ -103,6 +103,12 @@ class BookmarkManager < Sinatra::Base
       flash[:notice] = 'Please check your email or password.'
       redirect '/sessions/new'
     end
+  end
+
+  post '/sessions/destroy' do
+    session.clear
+    flash[:notice] = 'You have signed out.'
+    redirect '/bookmarks'
   end
 
   run! if app_file == $0
