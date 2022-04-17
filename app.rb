@@ -56,17 +56,11 @@ class BookmarkManager < Sinatra::Base
 
   get '/bookmarks/:id/comments/new' do
     @bookmark_id = params[:id]
-    p "reach this point"
     erb :'/comments/new'
   end
 
   post '/bookmarks/:id/comments' do
-    p params
-    connection = PG.connect(dbname: 'bookmark_manager_test')
-    connection.exec_params(
-      "INSERT INTO comments (text, bookmark_id) VALUES($1, $2);",
-      [params[:comment], params[:id]]
-    )
+    Comment.create(text: params[:comment], bookmark_id: params[:id])
     redirect '/bookmarks'
   end
 

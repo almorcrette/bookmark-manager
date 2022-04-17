@@ -21,10 +21,10 @@ describe Bookmark do
   describe '.create' do
     it 'creates a new bookmark' do
       bookmark = Bookmark.create(url: 'https://www.bbc.co.uk/sounds', title: 'BBC Sounds')
-      persisted_data = persisted_data(id: bookmark.id)
+      persisted_data = persisted_data(table: 'bookmarks', id: bookmark.id)
 
       expect(bookmark).to be_a Bookmark
-      expect(bookmark.id).to eq persisted_data['id']
+      expect(bookmark.id).to eq persisted_data.first['id']
       expect(bookmark.title).to eq 'BBC Sounds'
       expect(bookmark.url).to eq 'https://www.bbc.co.uk/sounds'
     end
@@ -65,17 +65,14 @@ describe Bookmark do
     end
   end
 
+  let(:comment_class) { double(:comment_class) }
+
   describe '#comments' do
-    it 'returns a list of comments on the bookmark' do
+    it 'calls .where on the Comment class' do
       bookmark = Bookmark.create(title: 'Makers Academy', url: 'http://wwew.makersacademy.com')
-      DatabaseConnection.query(
-        "INSERT INTO comments (id, text, bookmark_id) VALUES(1, 'Test comment', $1)",
-        [bookmark.id]
-      )
+      expect(comment_class).to receive(:where).with(bookmark_id: bookmark.id)
 
-      comment = bookmark.comments.first
-
-      expect(comment['text']).to eq 'Test comment'
+      bookmark.comments(comment_class)
     end
   end
 end
