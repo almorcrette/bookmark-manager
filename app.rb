@@ -37,12 +37,9 @@ class BookmarkManager < Sinatra::Base
   # Bookmarks create
   post '/bookmarks' do
     if params['url'] =~ /\A#{URI::DEFAULT_PARSER.make_regexp(['http', 'https'])}\z/
-      p "I've passed the validation rule"
       Bookmark.create(url: params[:url], title: params[:title])
     else
-      p "I've been caught by the validation rule"
       flash[:notice] = "You must submit a valid URL."
-      p flash[:notice]
     end
     redirect to('/bookmarks')
   end
@@ -53,8 +50,23 @@ class BookmarkManager < Sinatra::Base
   end
 
   patch '/bookmarks/:id' do
-    p "is it getting here?"
     Bookmark.update(id: params[:id], title: params[:title], url: params[:url])
+    redirect '/bookmarks'
+  end
+
+  get '/bookmarks/:id/comments/new' do
+    @bookmark_id = params[:id]
+    p "reach this point"
+    erb :'/comments/new'
+  end
+
+  post '/bookmarks/:id/comments' do
+    p params
+    connection = PG.connect(dbname: 'bookmark_manager_test')
+    connection.exec_params(
+      "INSERT INTO comments (text, bookmark_id) VALUES($1, $2);",
+      [params[:comment], params[:id]]
+    )
     redirect '/bookmarks'
   end
 
